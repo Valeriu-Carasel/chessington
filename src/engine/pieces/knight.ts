@@ -12,7 +12,7 @@ export default class Knight extends Piece {
     public getAvailableMoves(board: Board) {
         let currentPosition=board.findPiece(this);
         let arrayOfMoves=new Array();
-        for (let i=-2;i<=2;i+=4) {
+        for (let i:number=-2;i<=2;i+=4) {
             for (let j:number=-1;j<=1;j+=2) {
                 if (CheckBounds.inBounds(currentPosition.col + i) && CheckBounds.inBounds(currentPosition.row + j)) {
                     arrayOfMoves.push(new Square(currentPosition.row + i, currentPosition.col + j));
