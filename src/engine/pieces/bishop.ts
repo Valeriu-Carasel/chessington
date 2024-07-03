@@ -12,14 +12,36 @@ export default class Bishop extends Piece {
     public getAvailableMoves(board: Board) {
         let currentPosition=board.findPiece(this);
         let arrayOfMoves = new Array();
-        for (let i=-7;i<=7;i++)
+
+        let position:Square=new Square(currentPosition.row+1,currentPosition.col+1);
+        while (CheckBounds.inBounds(position.row) && CheckBounds.inBounds(position.col) && board.getPiece(position)==undefined)
         {
-            if (i!=0) {
-                if (CheckBounds.inBounds(currentPosition.row + i) && CheckBounds.inBounds(currentPosition.col + i))
-                    arrayOfMoves.push(new Square(currentPosition.row + i, currentPosition.col + i));
-                if (CheckBounds.inBounds(currentPosition.row - i) && CheckBounds.inBounds(currentPosition.col + i))
-                    arrayOfMoves.push(new Square(currentPosition.row - i, currentPosition.col + i));
-            }
+            //intreaba-l pe Raimond, aici aveai position in loc de new Square si facea niste chestii ciudate
+            //was it a refference?
+            arrayOfMoves.push(new Square(position.row,position.col));
+            position.col+=1;
+            position.row+=1;
+        }
+        position=new Square(currentPosition.row-1,currentPosition.col-1);
+        while (CheckBounds.inBounds(position.row) && CheckBounds.inBounds(position.col) && board.getPiece(position)==undefined)
+        {
+            arrayOfMoves.push(new Square(position.row,position.col));
+            position.col-=1;
+            position.row-=1;
+        }
+        position=new Square(currentPosition.row-1,currentPosition.col+1);
+        while (CheckBounds.inBounds(position.row) && CheckBounds.inBounds(position.col) && board.getPiece(position)==undefined)
+        {
+            arrayOfMoves.push(new Square(position.row,position.col));
+            position.col+=1;
+            position.row-=1;
+        }
+        position=new Square(currentPosition.row+1,currentPosition.col-1);
+        while (CheckBounds.inBounds(position.row) && CheckBounds.inBounds(position.col) && board.getPiece(position)==undefined)
+        {
+            arrayOfMoves.push(new Square(position.row,position.col));
+            position.col-=1;
+            position.row+=1;
         }
         return arrayOfMoves;
     }
