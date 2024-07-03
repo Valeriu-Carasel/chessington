@@ -2,6 +2,7 @@ import Piece from './piece';
 import Player from '../player';
 import Board from '../board';
 import Square from "../square";
+import CheckBounds from "./CheckBounds";
 
 export default class Pawn extends Piece {
     public constructor(player: Player) {
@@ -20,12 +21,10 @@ export default class Pawn extends Piece {
                 let square1=new Square(currentPlace.row + (2*modifier), currentPlace.col);
                 let square2=new Square(currentPlace.row + modifier, currentPlace.col);
                 if (board.getPiece(square1)===undefined && board.getPiece(square2)==undefined)
-                    arrayOfMoves.push(square1);
+                    this.add(square1,arrayOfMoves,board);
             }
             let square=new Square(currentPlace.row + modifier, currentPlace.col);
-            if (board.getPiece(square)===undefined) {
-                arrayOfMoves.push(square);
-            }
+            this.add(square,arrayOfMoves,board);
         }
         else
         {
@@ -35,14 +34,19 @@ export default class Pawn extends Piece {
                 let square1=new Square(currentPlace.row + (2*modifier), currentPlace.col);
                 let square2=new Square(currentPlace.row + modifier, currentPlace.col);
                 if (board.getPiece(square1)===undefined && board.getPiece(square2)==undefined)
-                    arrayOfMoves.push(square1);
+                    this.add(square1,arrayOfMoves,board);
             }
             let square=new Square(currentPlace.row + modifier, currentPlace.col);
-            if (board.getPiece(square)===undefined) {
-                arrayOfMoves.push(square);
-            }
+            this.add(square,arrayOfMoves,board);
         }
 
         return arrayOfMoves;
+    }
+
+    public add(square:Square,array:Array<Square>,board:Board):void
+    {
+        if (CheckBounds.inBounds(square.col) && CheckBounds.inBounds(square.row))
+            if (board.getPiece(square)===undefined)
+                 array.push(square);
     }
 }
