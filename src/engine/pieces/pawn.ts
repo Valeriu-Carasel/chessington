@@ -12,10 +12,21 @@ export default class Pawn extends Piece {
 
         let currentPlace=board.findPiece(this);
         let arrayOfMoves=new Array();
-        if (this.player==Player.WHITE)
-            arrayOfMoves.push(new Square(currentPlace.row+1,currentPlace.col));
+        var modifier:number;
+        if (this.player==Player.WHITE) {
+            modifier = 1;
+            if (currentPlace.row==1)
+                arrayOfMoves.push(new Square(currentPlace.row + (2*modifier), currentPlace.col));
+            arrayOfMoves.push(new Square(currentPlace.row + (1*modifier), currentPlace.col));
+        }
         else
-            arrayOfMoves.push(new Square(currentPlace.row-1,currentPlace.col));
+        {
+            modifier = -1;
+            if (currentPlace.row==6)
+                arrayOfMoves.push(new Square(currentPlace.row + (2*modifier), currentPlace.col));
+            arrayOfMoves.push(new Square(currentPlace.row + (1*modifier), currentPlace.col));
+        }
+
         return arrayOfMoves;
     }
 }
