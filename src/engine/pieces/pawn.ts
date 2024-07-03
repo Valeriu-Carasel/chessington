@@ -3,6 +3,7 @@ import Player from '../player';
 import Board from '../board';
 import Square from "../square";
 import CheckBounds from "./CheckBounds";
+import King from "./king";
 
 export default class Pawn extends Piece {
     public constructor(player: Player) {
@@ -40,6 +41,7 @@ export default class Pawn extends Piece {
             this.add(square,arrayOfMoves,board);
         }
 
+        this.takePiece(currentPlace,board,this.player,arrayOfMoves,);
         return arrayOfMoves;
     }
 
@@ -48,5 +50,35 @@ export default class Pawn extends Piece {
         if (CheckBounds.inBounds(square.col) && CheckBounds.inBounds(square.row))
             if (board.getPiece(square)===undefined)
                  array.push(square);
+    }
+
+    public takePiece(currentPlace:Square,board:Board,player:Player,arrayOfMoves:Array<any>):void {
+        let option1:Square;
+        let option2:Square;
+        if (this.player==Player.WHITE) {
+            option1 = new Square(currentPlace.row + 1, currentPlace.col - 1);
+            option2 = new Square(currentPlace.row + 1, currentPlace.col + 1);
+        }
+        else
+        {
+            option1 = new Square(currentPlace.row - 1, currentPlace.col - 1);
+            option2 = new Square(currentPlace.row - 1, currentPlace.col + 1);
+        }
+        if (CheckBounds.inBounds(option1.col) && CheckBounds.inBounds(option1.row)) {
+            if (board.getPiece(option1) != undefined) {
+                if (board.getPiece(option1)?.player != player) {
+                    if (!(board.getPiece(option1) instanceof King))
+                        arrayOfMoves.push(option1);
+                }
+            }
+        }
+        if (CheckBounds.inBounds(option2.col) && CheckBounds.inBounds(option2.row)) {
+            if (board.getPiece(option2) != undefined) {
+                if (board.getPiece(option2)?.player != player) {
+                    if (!(board.getPiece(option2) instanceof King))
+                        arrayOfMoves.push(option2);
+                }
+            }
+        }
     }
 }
