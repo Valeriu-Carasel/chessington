@@ -3,6 +3,7 @@ import Player from '../player';
 import Board from '../board';
 import Square from "../square";
 import CheckBounds from "./CheckBounds";
+import PieceTaker from "./PieceTaker";
 
 export default class King extends Piece {
     public constructor(player: Player) {
@@ -22,6 +23,7 @@ export default class King extends Piece {
                 }
             }
         }
+        PieceTaker.takePieces(board,arrayOfMoves,this.player);
         return arrayOfMoves;
     }
 }

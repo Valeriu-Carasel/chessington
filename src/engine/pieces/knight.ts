@@ -4,6 +4,7 @@ import Board from '../board';
 import CheckBounds from "./CheckBounds";
 import Square from "../square";
 import King from "./king";
+import PieceTaker from "./PieceTaker";
 
 export default class Knight extends Piece {
     public constructor(player: Player) {
@@ -23,16 +24,7 @@ export default class Knight extends Piece {
                 }
             }
         }
-        for (let i=0;i<arrayOfMoves.length;i++) {
-            if (board.getPiece(arrayOfMoves.at(i))?.player==this.player) {
-                arrayOfMoves.splice(i,1);
-            }
-            else
-            {
-                if (board.getPiece(arrayOfMoves.at(i)) instanceof King)
-                    arrayOfMoves.splice(i,1);
-            }
-        }
+        PieceTaker.takePieces(board,arrayOfMoves,this.player);
         return arrayOfMoves;
     }
 }
