@@ -19,7 +19,7 @@ export default class SingletonKings{
 
     public static getInstnace(player: Player, board: Board): SingletonKings{
         this.board = board;
-        return player==Player.WHITE?this.instanceWhite:this.instanceBlack;
+        return player==Player.WHITE?this.instanceWhite:this.instanceBlack; //maybe???
     }
 
     get square(): Square {

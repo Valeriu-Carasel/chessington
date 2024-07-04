@@ -6,6 +6,7 @@ import Pawn from '../../../src/engine/pieces/pawn';
 import Rook from "../../../src/engine/pieces/rook";
 import Piece from "../../../src/engine/pieces/piece";
 import {assert} from "chai";
+import Bishop from "../../../src/engine/pieces/bishop";
 
 describe('King', () => {
     let board: Board;
@@ -105,5 +106,15 @@ describe('King', () => {
         if (!(presumedKing instanceof King && presumedRook instanceof Rook)) {
             assert.fail()
         }
+    });
+
+    it ('check bishop', () =>{
+       const king: King = new King(Player.WHITE);
+       const bishop: Bishop = new Bishop(Player.BLACK);
+
+       board.setPiece(Square.at(0,0), king);
+       board.setPiece(Square.at(4,4), bishop);
+
+       king.moveTo(board,Square.at(0,1));
     });
 });

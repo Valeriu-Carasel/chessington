@@ -161,7 +161,7 @@ export default class King extends Piece {
     }
 
     private static checkForPawn(currentPosition: Square, player: Player, board: Board): boolean{
-        const modifier: number= player==Player.WHITE?1:-1;
+        const modifier: number= player == Player.WHITE?1:-1;
         const positionLeft: Square = new Square(currentPosition.row+modifier,currentPosition.col - 1);
         const positionRight: Square = new Square(currentPosition.row + modifier, currentPosition.col + 1);
         if (CheckBounds.squareInBounds(positionLeft))
