@@ -42,7 +42,6 @@ export default class Board {
             }
             if (movingPiece instanceof King) {
                 this.handleCastle(movingPiece, fromSquare, toSquare);
-                this.currentPlayer = (this.currentPlayer === Player.WHITE ? Player.BLACK : Player.WHITE); //added so it reverts back to the other player, ask Raimond
             }
 
             this.setPiece(toSquare, movingPiece);
@@ -55,7 +54,7 @@ export default class Board {
             for (let i= 0; i <= 7; i++) {
                 let piece = this.getPiece(Square.at(rowPlayer, i));
                 if (piece instanceof Pawn) {
-                    let pawn= <Pawn> piece;
+                    const pawn= <Pawn> piece;
                     pawn.possibleEnPassant = false;
                 }
             }
@@ -75,10 +74,12 @@ export default class Board {
             if (toSquare.col - fromSquare.col == 2) {
                 const squareRook: Square = new Square(fromSquare.row, 7);
                 this.movePiece(squareRook, new Square(toSquare.row, toSquare.col - 1));
+                this.currentPlayer = (this.currentPlayer === Player.WHITE ? Player.BLACK : Player.WHITE); //added so it reverts back to the other player, ask Raimond
             }
             if (toSquare.col - fromSquare.col == -2) {
                 const squareRook: Square= new Square(fromSquare.row,0);
                 this.movePiece(squareRook, new Square(toSquare.row, toSquare.col + 1));
+                this.currentPlayer = (this.currentPlayer === Player.WHITE ? Player.BLACK : Player.WHITE); //added so it reverts back to the other player, ask Raimond
             }
         }
     }
