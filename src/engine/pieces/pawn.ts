@@ -6,8 +6,19 @@ import CheckBounds from "./CheckBounds";
 import King from "./king";
 
 export default class Pawn extends Piece {
+
+    private _possibleEnPassant:boolean=false;
+
     public constructor(player: Player) {
         super(player);
+    }
+
+    get possibleEnPassant(): boolean {
+        return this._possibleEnPassant;
+    }
+
+    set possibleEnPassant(value: boolean) {
+        this._possibleEnPassant = value;
     }
 
     public getAvailableMoves(board: Board) {
@@ -41,7 +52,8 @@ export default class Pawn extends Piece {
             this.add(square,arrayOfMoves,board);
         }
 
-        this.takePiece(currentPlace,board,this.player,arrayOfMoves,);
+        this.takePiece(currentPlace,board,this.player,arrayOfMoves);
+        this.enPassant(currentPlace,board,this.player,arrayOfMoves)
         return arrayOfMoves;
     }
 
@@ -77,6 +89,44 @@ export default class Pawn extends Piece {
                 if (board.getPiece(option2)?.player != player) {
                     if (!(board.getPiece(option2) instanceof King))
                         arrayOfMoves.push(option2);
+                }
+            }
+        }
+    }
+    public enPassant(currentPlace: Square,board:Board,player:Player,arrayOfMoves:Array<any>)
+    {
+        let option1=new Square(currentPlace.row,currentPlace.col-1);
+        let option2=new Square(currentPlace.row,currentPlace.col+1);
+        if (CheckBounds.inBounds(option1.col) && CheckBounds.inBounds(option1.row))
+        {
+            if (board.getPiece(option1) instanceof Pawn)
+            {
+                let pawn:Pawn= (<Pawn>board.getPiece(option1));
+                if (pawn.possibleEnPassant)
+                {
+                    let modifier:number;
+                    if (this.player==Player.WHITE)
+                        modifier=1;
+                    else
+                        modifier=-1;
+                    arrayOfMoves.push(new Square(currentPlace.row+modifier,option1.col));
+                }
+            }
+        }
+        if (CheckBounds.inBounds(option2.col) && CheckBounds.inBounds(option2.row))
+        {
+            let target=board.getPiece(option2);
+            if (board.getPiece(option2) instanceof Pawn)
+            {
+                let pawn:Pawn= (<Pawn>board.getPiece(option2));
+                if (pawn.possibleEnPassant)
+                {
+                    let modifier:number;
+                    if (this.player==Player.WHITE)
+                        modifier=1;
+                    else
+                        modifier=-1;
+                    arrayOfMoves.push(new Square(currentPlace.row+modifier,option2.col));
                 }
             }
         }

@@ -4,6 +4,7 @@ import Player from '../../../src/engine/player';
 import Square from '../../../src/engine/square';
 import Rook from '../../../src/engine/pieces/rook';
 import King from '../../../src/engine/pieces/king';
+import {assert} from "chai";
 
 describe('Pawn', () => {
 
@@ -83,6 +84,30 @@ describe('Pawn', () => {
 
             moves.should.not.deep.include(Square.at(5, 3));
         });
+        it ("En Passant move",()=>{
+            const pawn : Pawn = new Pawn(Player.WHITE);
+            const oppPawn : Pawn = new Pawn(Player.BLACK);
+            board.setPiece(Square.at(4,0),pawn);
+            board.setPiece(Square.at(4,1),oppPawn);
+
+            oppPawn.possibleEnPassant=true;
+            const moves=pawn.getAvailableMoves(board);
+
+            moves.should.deep.include(Square.at(5,1));
+        });
+
+        it ("En Passant remove", () =>{
+            const pawn : Pawn = new Pawn(Player.WHITE);
+            const oppPawn : Pawn = new Pawn(Player.BLACK);
+            board.setPiece(Square.at(4,0),pawn);
+            board.setPiece(Square.at(4,1),oppPawn);
+
+            oppPawn.possibleEnPassant=true;
+            pawn.moveTo(board,Square.at(5,1));
+            const squareOpp:any=board.getPiece(new Square(4,1));
+            if (squareOpp!=undefined)
+                assert.fail(); // ask raimond here
+        });
     });
 
     describe('black pawns', () => {
@@ -160,6 +185,29 @@ describe('Pawn', () => {
             const moves = pawn.getAvailableMoves(board);
 
             moves.should.not.deep.include(Square.at(3, 3));
+        });
+        it ("En Passant move",()=>{
+            const pawn : Pawn = new Pawn(Player.BLACK);
+            const oppPawn : Pawn = new Pawn(Player.WHITE);
+            board.setPiece(Square.at(3,2),pawn);
+            board.setPiece(Square.at(3,1),oppPawn);
+
+            oppPawn.possibleEnPassant=true;
+            const moves=pawn.getAvailableMoves(board);
+
+            moves.should.deep.include(Square.at(2,1));
+        });
+        it ("En Passant remove", () =>{
+            const pawn : Pawn = new Pawn(Player.BLACK);
+            const oppPawn : Pawn = new Pawn(Player.WHITE);
+            board.setPiece(Square.at(3,2),pawn);
+            board.setPiece(Square.at(3,1),oppPawn);
+
+            oppPawn.possibleEnPassant=true;
+            pawn.moveTo(board,Square.at(2,1));
+            const squareOpp:any=board.getPiece(new Square(3,1));
+            if (squareOpp!=undefined)
+                assert.fail(); // ask raimond here
         });
     });
 
