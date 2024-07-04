@@ -5,6 +5,8 @@ import Square from '../../../src/engine/square';
 import Rook from '../../../src/engine/pieces/rook';
 import King from '../../../src/engine/pieces/king';
 import {assert} from "chai";
+import Piece from "../../../src/engine/pieces/piece";
+import Queen from "../../../src/engine/pieces/queen";
 
 describe('Pawn', () => {
 
@@ -108,6 +110,17 @@ describe('Pawn', () => {
             if (squareOpp!=undefined)
                 assert.fail(); // ask raimond here
         });
+        it ("Pawn Promotion",() => {
+            const pawn:Pawn = new Pawn(Player.WHITE);
+            board.setPiece(Square.at(6,1),pawn);
+            pawn.moveTo(board,Square.at(7,1));
+
+            const square:Square=Square.at(7,1);
+            const piece:Piece | undefined=board.getPiece(square);
+
+            if (!(piece instanceof Queen))
+                assert.fail();
+        });
     });
 
     describe('black pawns', () => {
@@ -208,6 +221,18 @@ describe('Pawn', () => {
             const squareOpp:any=board.getPiece(new Square(3,1));
             if (squareOpp!=undefined)
                 assert.fail(); // ask raimond here
+        });
+        //cum ai face un test de En Passant neregulamentar???
+        it ("Pawn Promotion",() => {
+            const pawn:Pawn = new Pawn(Player.BLACK);
+            board.setPiece(Square.at(1,1),pawn);
+            pawn.moveTo(board,Square.at(0,1));
+
+            const square:Square=Square.at(0,1);
+            const piece:Piece | undefined=board.getPiece(square);
+
+            if (!(piece instanceof Queen))
+                assert.fail();
         });
     });
 

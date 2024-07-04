@@ -4,6 +4,8 @@ import Board from '../board';
 import Square from "../square";
 import CheckBounds from "./CheckBounds";
 import King from "./king";
+import player from "../player";
+import Queen from "./queen";
 
 export default class Pawn extends Piece {
 
@@ -11,6 +13,19 @@ export default class Pawn extends Piece {
 
     public constructor(player: Player) {
         super(player);
+    }
+
+    moveTo(board: Board, newSquare: Square) {
+        super.moveTo(board, newSquare);
+        let finishLine:number;
+        if (this.player===Player.WHITE)
+            finishLine=7;
+        else
+            finishLine=0;
+        if (newSquare.row==finishLine) {
+            const queen=new Queen(this.player);
+            board.setPiece(newSquare,queen);
+        }
     }
 
     get possibleEnPassant(): boolean {
@@ -93,6 +108,7 @@ export default class Pawn extends Piece {
             }
         }
     }
+
     public enPassant(currentPlace: Square,board:Board,player:Player,arrayOfMoves:Array<any>)
     {
         let option1=new Square(currentPlace.row,currentPlace.col-1);
