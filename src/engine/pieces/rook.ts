@@ -10,42 +10,42 @@ export default class Rook extends Piece {
     }
 
     public getAvailableMoves(board: Board) {
-        let currentPosition=board.findPiece(this);
+        let currentPosition= board.findPiece(this);
         let arrayOfMoves = new Array();
-        for (let i=currentPosition.row-1;i>=0;i--)
-        {
-            arrayOfMoves.push(new Square(i,currentPosition.col));
-            if (board.getPiece(new Square(i,currentPosition.col))!=undefined)
+
+        Rook.generateRookTypeMoves(board, currentPosition, arrayOfMoves, this.player);
+        return arrayOfMoves;
+    }
+
+    public static generateRookTypeMoves(board : Board, currentPosition: Square, arrayOfMoves: Array<any>, player: Player): void{
+        for (let i: number= currentPosition.row - 1; i >= 0; i--) {
+            arrayOfMoves.push(new Square(i, currentPosition.col));
+            if (board.getPiece(new Square(i, currentPosition.col)) != undefined)
                 break;
         }
-        for (let i=currentPosition.row+1;i<=7;i++)
-        {
-            arrayOfMoves.push(new Square(i,currentPosition.col));
-            if (board.getPiece(new Square(i,currentPosition.col))!=undefined)
+        for (let i: number=currentPosition.row + 1; i <= 7; i++) {
+            arrayOfMoves.push(new Square(i, currentPosition.col));
+            if (board.getPiece(new Square(i, currentPosition.col)) != undefined)
                 break;
         }
-        for (let i=currentPosition.col-1;i>=0;i--)
-        {
+        for (let i: number=currentPosition.col-1; i >= 0; i--) {
             arrayOfMoves.push(new Square(currentPosition.row,i));
-            if (board.getPiece(new Square(currentPosition.row,i))!=undefined)
+            if (board.getPiece(new Square(currentPosition.row,i)) != undefined)
                 break;
         }
-        for (let i=currentPosition.col+1;i<=7;i++)
-        {
+        for (let i: number=currentPosition.col + 1; i <= 7; i++) {
             arrayOfMoves.push(new Square(currentPosition.row,i));
-            if (board.getPiece(new Square(currentPosition.row,i))!=undefined)
+            if (board.getPiece(new Square(currentPosition.row,i)) != undefined)
                 break;
         }
-        for (let i=0;i<arrayOfMoves.length;i++) {
-            if (board.getPiece(arrayOfMoves.at(i))?.player==this.player) {
+        for (let i: number= 0;i < arrayOfMoves.length; i++) {
+            if (board.getPiece(arrayOfMoves.at(i))?.player == player) {
                 arrayOfMoves.splice(i,1);
             }
-            else
-            {
+            else {
                 if (board.getPiece(arrayOfMoves.at(i)) instanceof King)
                     arrayOfMoves.splice(i,1);
             }
         }
-        return arrayOfMoves;
     }
 }

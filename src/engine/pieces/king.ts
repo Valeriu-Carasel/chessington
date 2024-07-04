@@ -11,19 +11,17 @@ export default class King extends Piece {
     }
 
     public getAvailableMoves(board: Board) {
-        let currentPosition=board.findPiece(this);
-        let arrayOfMoves=new Array();
-        for (let i=-1;i<=1;i++)
-        {
-            for (let j=-1;j<=1;j++)
-            {
-                if (i!=0 || j!=0) {
-                    if (CheckBounds.inBounds(currentPosition.row+i) && CheckBounds.inBounds(currentPosition.col+j))
+        let currentPosition : Square = board.findPiece(this);
+        let arrayOfMoves : any[] = new Array();
+        for (let i : number =-1; i <= 1; i++) {
+            for (let j : number = -1; j <= 1; j++) {
+                if (i != 0 || j != 0) {
+                    if (CheckBounds.inBounds(currentPosition.row + i) && CheckBounds.inBounds(currentPosition.col + j))
                         arrayOfMoves.push(new Square(currentPosition.row + i, currentPosition.col + j));
                 }
             }
         }
-        PieceTaker.takePieces(board,arrayOfMoves,this.player);
+        PieceTaker.takePieces(board, arrayOfMoves, this.player);
         return arrayOfMoves;
     }
 }

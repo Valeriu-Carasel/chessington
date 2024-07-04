@@ -12,10 +12,10 @@ export default class Knight extends Piece {
     }
 
     public getAvailableMoves(board: Board) {
-        let currentPosition=board.findPiece(this);
-        let arrayOfMoves=new Array();
-        for (let i:number=-2;i<=2;i+=4) {
-            for (let j:number=-1;j<=1;j+=2) {
+        let currentPosition: Square = board.findPiece(this);
+        let arrayOfMoves= new Array();
+        for (let i:number =-2; i <= 2; i += 4) {
+            for (let j:number = -1; j <= 1; j += 2) {
                 if (CheckBounds.inBounds(currentPosition.row + i) && CheckBounds.inBounds(currentPosition.col + j)) {
                     arrayOfMoves.push(new Square(currentPosition.row + i, currentPosition.col + j));
                 }
@@ -24,7 +24,7 @@ export default class Knight extends Piece {
                 }
             }
         }
-        PieceTaker.takePieces(board,arrayOfMoves,this.player);
+        PieceTaker.takePieces(board, arrayOfMoves, this.player);
         return arrayOfMoves;
     }
 }
