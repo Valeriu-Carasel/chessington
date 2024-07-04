@@ -17,6 +17,10 @@ export default class Pawn extends Piece {
 
     moveTo(board: Board, newSquare: Square) {
         super.moveTo(board, newSquare);
+        this.promotePawn(board,newSquare);
+    }
+    public promotePawn(board:Board,newSquare:Square):void
+    {
         let finishLine:number;
         if (this.player===Player.WHITE)
             finishLine=7;
@@ -40,43 +44,50 @@ export default class Pawn extends Piece {
 
         let currentPlace=board.findPiece(this);
         let arrayOfMoves=new Array();
-        var modifier:number;
-        if (this.player==Player.WHITE) {
-            modifier = 1;
-            if (currentPlace.row==1)
-            {
-                let square1=new Square(currentPlace.row + (2*modifier), currentPlace.col);
-                let square2=new Square(currentPlace.row + modifier, currentPlace.col);
-                if (board.getPiece(square1)===undefined && board.getPiece(square2)==undefined)
-                    this.add(square1,arrayOfMoves,board);
-            }
-            let square=new Square(currentPlace.row + modifier, currentPlace.col);
-            this.add(square,arrayOfMoves,board);
-        }
-        else
-        {
-            modifier=-1;
-            if (currentPlace.row==6)
-            {
-                let square1=new Square(currentPlace.row + (2*modifier), currentPlace.col);
-                let square2=new Square(currentPlace.row + modifier, currentPlace.col);
-                if (board.getPiece(square1)===undefined && board.getPiece(square2)==undefined)
-                    this.add(square1,arrayOfMoves,board);
-            }
-            let square=new Square(currentPlace.row + modifier, currentPlace.col);
-            this.add(square,arrayOfMoves,board);
-        }
+
+        let initialPosition:  {
+            modifier:number,
+            startingPosition:number
+        }={modifier:0,startingPosition:0};
+        this.setDirection(initialPosition);
+
+        this.doubleMove(initialPosition,currentPlace,board,arrayOfMoves);
+
+        let square=new Square(currentPlace.row + initialPosition.modifier, currentPlace.col);
+        this.add(square,arrayOfMoves,board);
 
         this.takePiece(currentPlace,board,this.player,arrayOfMoves);
         this.enPassant(currentPlace,board,this.player,arrayOfMoves)
         return arrayOfMoves;
     }
 
-    public add(square:Square,array:Array<Square>,board:Board):void
-    {
-        if (CheckBounds.inBounds(square.col) && CheckBounds.inBounds(square.row))
+    //pare sa fie o problema sa ii dau tipul any
+    public setDirection(initialPosition:any):void{
+        if (this.player==Player.WHITE) {
+            initialPosition.modifier = 1;
+            initialPosition.starterPosition=1;
+        }
+        else {
+            initialPosition.modifier=-1;
+            initialPosition.starterPosition=6;
+        }
+    }
+
+    public doubleMove(initialPosition:any,currentPlace:Square,board:Board,arrayOfMoves:Array<any>):void{
+        let starterPosition:number;
+        if (currentPlace.row==initialPosition.starterPosition)
+        {
+            let square1=new Square(currentPlace.row + (2*initialPosition.modifier), currentPlace.col);
+            let square2=new Square(currentPlace.row + initialPosition.modifier, currentPlace.col);
+            if (board.getPiece(square1)===undefined && board.getPiece(square2)==undefined)
+                this.add(square1,arrayOfMoves,board);
+        }
+    }
+
+    public add(square:Square,arrayOfMoves:Array<Square>,board:Board):void {
+        if (CheckBounds.squareInBounds(square))
             if (board.getPiece(square)===undefined)
-                 array.push(square);
+                 arrayOfMoves.push(square);
     }
 
     public takePiece(currentPlace:Square,board:Board,player:Player,arrayOfMoves:Array<any>):void {
