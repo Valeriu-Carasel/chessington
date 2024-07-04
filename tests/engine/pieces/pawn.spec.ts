@@ -111,13 +111,16 @@ describe('Pawn', () => {
                 assert.fail(); // ask raimond here
         });
         it ("Pawn Promotion",() => {
+            //given
             const pawn:Pawn = new Pawn(Player.WHITE);
             board.setPiece(Square.at(6,1),pawn);
+            const square:Square=Square.at(7,1);
+
+            //then
             pawn.moveTo(board,Square.at(7,1));
 
-            const square:Square=Square.at(7,1);
+            //when
             const piece:Piece | undefined=board.getPiece(square);
-
             if (!(piece instanceof Queen))
                 assert.fail();
         });
