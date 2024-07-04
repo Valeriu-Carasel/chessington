@@ -19,18 +19,6 @@ export default class Pawn extends Piece {
         super.moveTo(board, newSquare);
         this.promotePawn(board,newSquare);
     }
-    public promotePawn(board:Board,newSquare:Square):void
-    {
-        let finishLine:number;
-        if (this.player===Player.WHITE)
-            finishLine=7;
-        else
-            finishLine=0;
-        if (newSquare.row==finishLine) {
-            const queen=new Queen(this.player);
-            board.setPiece(newSquare,queen);
-        }
-    }
 
     get possibleEnPassant(): boolean {
         return this._possibleEnPassant;
@@ -54,9 +42,9 @@ export default class Pawn extends Piece {
         this.doubleMove(initialPosition,currentPlace,board,arrayOfMoves);
 
         let square=new Square(currentPlace.row + initialPosition.modifier, currentPlace.col);
-        this.add(square,arrayOfMoves,board);
+        this.addMove(square,arrayOfMoves,board);
 
-        this.takePiece(currentPlace,board,this.player,arrayOfMoves);
+        this.takePiece(initialPosition,currentPlace,board,this.player,arrayOfMoves);
         this.enPassant(currentPlace,board,this.player,arrayOfMoves)
         return arrayOfMoves;
     }
@@ -80,18 +68,18 @@ export default class Pawn extends Piece {
             let square1=new Square(currentPlace.row + (2*initialPosition.modifier), currentPlace.col);
             let square2=new Square(currentPlace.row + initialPosition.modifier, currentPlace.col);
             if (board.getPiece(square1)===undefined && board.getPiece(square2)==undefined)
-                this.add(square1,arrayOfMoves,board);
+                this.addMove(square1,arrayOfMoves,board);
         }
     }
 
-    public add(square:Square,arrayOfMoves:Array<Square>,board:Board):void {
+    public addMove(square:Square,arrayOfMoves:Array<Square>,board:Board):void {
         if (CheckBounds.squareInBounds(square))
             if (board.getPiece(square)===undefined)
                  arrayOfMoves.push(square);
     }
 
-    public takePiece(currentPlace:Square,board:Board,player:Player,arrayOfMoves:Array<any>):void {
-        let option1:Square;
+    public takePiece(initialPosition:any,currentPlace:Square,board:Board,player:Player,arrayOfMoves:Array<any>):void {
+        let option1:Square=new Square(currentPlace.row+initialPosition.modifier,currentPlace.col-1);
         let option2:Square;
         if (this.player==Player.WHITE) {
             option1 = new Square(currentPlace.row + 1, currentPlace.col - 1);
@@ -132,8 +120,8 @@ export default class Pawn extends Piece {
                 if (pawn.possibleEnPassant)
                 {
                     let modifier:number;
-                    if (this.player==Player.WHITE)
-                        modifier=1;
+                    if (this.player == Player.WHITE)
+                        modifier = 1;
                     else
                         modifier=-1;
                     arrayOfMoves.push(new Square(currentPlace.row+modifier,option1.col));
@@ -149,13 +137,26 @@ export default class Pawn extends Piece {
                 if (pawn.possibleEnPassant)
                 {
                     let modifier:number;
-                    if (this.player==Player.WHITE)
-                        modifier=1;
+                    if (this.player == Player.WHITE)
+                        modifier = 1;
                     else
-                        modifier=-1;
+                        modifier = -1;
                     arrayOfMoves.push(new Square(currentPlace.row+modifier,option2.col));
                 }
             }
+        }
+    }
+
+    public promotePawn(board:Board,newSquare:Square):void
+    {
+        let finishLine:number;
+        if (this.player===Player.WHITE)
+            finishLine=7;
+        else
+            finishLine=0;
+        if (newSquare.row==finishLine) {
+            const queen=new Queen(this.player);
+            board.setPiece(newSquare,queen);
         }
     }
 }
