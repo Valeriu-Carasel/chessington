@@ -51,4 +51,8 @@ export default class King extends Piece {
         }
         return undefined;
     }
+
+    public checkIfPositionIsChecked(position: Square){
+
+    }
 }
