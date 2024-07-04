@@ -14,6 +14,7 @@ import * as console from "node:console";
 
 
 export default class King extends Piece {
+
     public constructor(player: Player) {
         super(player);
     }
