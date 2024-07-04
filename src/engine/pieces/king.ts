@@ -20,11 +20,9 @@ export default class King extends Piece {
 
     moveTo(board: Board, newSquare: Square) {
         const currentPosition: Square = board.findPiece(this);
-        if (this.checkIfPositionIsChecked(newSquare, board, this.player)) {
-            super.moveTo(board,currentPosition);
-        }
-        else
+        if (!this.checkIfPositionIsChecked(newSquare, board, this.player)) {
             super.moveTo(board, newSquare);
+        }
     }
 
     public getAvailableMoves(board: Board) {
