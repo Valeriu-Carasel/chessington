@@ -4,7 +4,7 @@ import King from "./king";
 import Player from "../player";
 
 export default class PieceTaker{
-    public static takePieces(board:Board,arrayOfMoves:Array<any>,player:Player)
+    public static preventPiecesOverlap(board: Board, arrayOfMoves: Array<any>, player: Player)
     {
         for (let i=0; i < arrayOfMoves.length; i++) {
             if (board.getPiece(arrayOfMoves.at(i))?.player == player) {

@@ -17,7 +17,7 @@ export default class Rook extends Piece {
         return arrayOfMoves;
     }
 
-    public static generateRookTypeMoves(board : Board, currentPosition: Square, arrayOfMoves: Array<any>, player: Player): void{
+    public static generateRookTypeMoves(board: Board, currentPosition: Square, arrayOfMoves: Array<any>, player: Player): void{
         for (let i: number= currentPosition.row - 1; i >= 0; i--) {
             arrayOfMoves.push(new Square(i, currentPosition.col));
             if (board.getPiece(new Square(i, currentPosition.col)) != undefined)

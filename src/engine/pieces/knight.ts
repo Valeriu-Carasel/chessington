@@ -14,17 +14,20 @@ export default class Knight extends Piece {
     public getAvailableMoves(board: Board) {
         let currentPosition: Square = board.findPiece(this);
         let arrayOfMoves= new Array();
-        for (let i:number =-2; i <= 2; i += 4) {
-            for (let j:number = -1; j <= 1; j += 2) {
-                if (CheckBounds.inBounds(currentPosition.row + i) && CheckBounds.inBounds(currentPosition.col + j)) {
-                    arrayOfMoves.push(new Square(currentPosition.row + i, currentPosition.col + j));
+        for (let i: number =-2; i <= 2; i += 4) {
+            for (let j: number = -1; j <= 1; j += 2) {
+                let extendRowWise: Square = new Square(currentPosition.row + i, currentPosition.col + j);
+                if (CheckBounds.squareInBounds(extendRowWise)) {
+                    arrayOfMoves.push(extendRowWise);
                 }
-                if (CheckBounds.inBounds(currentPosition.row + j) && CheckBounds.inBounds(currentPosition.col + i)) {
-                    arrayOfMoves.push(new Square(currentPosition.row + j, currentPosition.col + i));
+
+                let extendColWise: Square = new Square(currentPosition.row + j, currentPosition.col + i);
+                if (CheckBounds.squareInBounds(extendColWise)) {
+                    arrayOfMoves.push(extendColWise);
                 }
             }
         }
-        PieceTaker.takePieces(board, arrayOfMoves, this.player);
+        PieceTaker.preventPiecesOverlap(board, arrayOfMoves, this.player);
         return arrayOfMoves;
     }
 }

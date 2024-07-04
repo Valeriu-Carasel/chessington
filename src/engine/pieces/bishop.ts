@@ -11,49 +11,29 @@ export default class Bishop extends Piece {
     }
 
     public getAvailableMoves(board: Board) {
-        let currentPosition : Square = board.findPiece(this);
-        let arrayOfMoves : any[] = new Array();
+        let currentPosition: Square = board.findPiece(this);
+        let arrayOfMoves: any[] = new Array();
         Bishop.generateBishopTypeMoves(board, currentPosition, arrayOfMoves, this.player);
 
         return arrayOfMoves;
     }
 
-    public static generateBishopTypeMoves(board : Board, currentPosition : Square, arrayOfMoves : Array<any>, player: Player) : void {
-        let position : Square = new Square(currentPosition.row + 1, currentPosition.col + 1);
-        while (CheckBounds.squareInBounds(position)) {
-            //intreaba-l pe Raimond, aici aveai position in loc de new Square si facea niste chestii ciudate
-            //was it a refference?
-            arrayOfMoves.push(new Square(position.row, position.col));
-            if (board.getPiece(position) != undefined)
-                break;
-            position.col += 1;
-            position.row += 1;
-        }
+
+
+    public static generateBishopTypeMoves(board: Board, currentPosition: Square, arrayOfMoves: Array<any>, player: Player): void {
+        let position: Square = new Square(currentPosition.row + 1, currentPosition.col + 1);
+        Bishop.searchDirection(board, position, arrayOfMoves, 1, 1);
+
         position = new Square(currentPosition.row - 1, currentPosition.col - 1);
-        while (CheckBounds.squareInBounds(position)) {
-            arrayOfMoves.push(new Square(position.row, position.col));
-            if (board.getPiece(position) != undefined)
-                break;
-            position.col -= 1;
-            position.row -= 1;
-        }
+        Bishop.searchDirection(board, position, arrayOfMoves, -1,  -1);
+
         position = new Square(currentPosition.row - 1,currentPosition.col + 1);
-        while (CheckBounds.squareInBounds(position)) {
-            arrayOfMoves.push(new Square(position.row, position.col));
-            if (board.getPiece(position) != undefined)
-                break;
-            position.col += 1;
-            position.row -= 1;
-        }
+        Bishop.searchDirection(board, position, arrayOfMoves,  -1, 1);
+
         position = new Square(currentPosition.row + 1, currentPosition.col - 1);
-        while (CheckBounds.squareInBounds(position)) {
-            arrayOfMoves.push(new Square(position.row, position.col));
-            if (board.getPiece(position) != undefined)
-                break;
-            position.col -= 1;
-            position.row += 1;
-        }
-        for (let i : number=0; i < arrayOfMoves.length; i++) {
+        Bishop.searchDirection(board, position, arrayOfMoves, 1,  -1);
+
+        for (let i: number = 0; i < arrayOfMoves.length; i++) {
             if (board.getPiece(arrayOfMoves.at(i))?.player == player) {
                 arrayOfMoves.splice(i, 1);
             }
@@ -61,6 +41,16 @@ export default class Bishop extends Piece {
                 if (board.getPiece(arrayOfMoves.at(i)) instanceof King)
                     arrayOfMoves.splice(i, 1);
             }
+        }
+    }
+
+    public static searchDirection(board: Board, position: Square, arrayOfMoves: Array<any>, directionRow: number, directionCol: number): void {
+        while (CheckBounds.squareInBounds(position)) {
+            arrayOfMoves.push(new Square(position.row, position.col));
+            if (board.getPiece(position) != undefined)
+                break;
+            position.col += directionCol;
+            position.row += directionRow;
         }
     }
 

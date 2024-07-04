@@ -35,44 +35,30 @@ export default class Board {
     public movePiece(fromSquare: Square, toSquare: Square) {
         const movingPiece = this.getPiece(fromSquare);        
         if (!!movingPiece && movingPiece.player === this.currentPlayer) {
-            if (movingPiece instanceof Pawn)
-            {
-                let nr1=2;
-                let nr2=-2;
-                if (toSquare.row-this.findPiece(movingPiece).row==nr1 || (toSquare.row-this.findPiece(movingPiece).row)==nr2)
-                {
+            if (movingPiece instanceof Pawn) {
+                if (toSquare.row - this.findPiece(movingPiece).row == 2  || (toSquare.row - this.findPiece(movingPiece).row) == -2) {
                     movingPiece.possibleEnPassant=true;
                 }
             }
             this.setPiece(toSquare, movingPiece);
             this.setPiece(fromSquare, undefined);
-            let squareBehind:Square;
-            if (this.currentPlayer===Player.WHITE)
-                squareBehind=new Square(toSquare.row-1,toSquare.col);
-            else
-                squareBehind=new Square(toSquare.row+1,toSquare.col)
-            if (this.getPiece(squareBehind) instanceof Pawn)
-            {
-                let pawnBehind: Pawn=(<Pawn>this.getPiece(squareBehind));
-                if (pawnBehind.possibleEnPassant==true)
-                {
+            const squareBehind = this.currentPlayer === Player.WHITE ? new Square(toSquare.row-1,toSquare.col) : new Square(toSquare.row+1,toSquare.col)
+
+
+            if (this.getPiece(squareBehind) instanceof Pawn) {
+                let pawnBehind: Pawn = ( <Pawn> this.getPiece(squareBehind));
+                if (pawnBehind.possibleEnPassant == true) {
                     this.setPiece(squareBehind,undefined);
                 }
             }
             this.currentPlayer = (this.currentPlayer === Player.WHITE ? Player.BLACK : Player.WHITE);
-            let rowPlayer:number;
-            if (this.currentPlayer===Player.WHITE) {
-                rowPlayer=3;
-            }
-            else{
-                rowPlayer=4;
-            }
-            for (let i=0;i<=7;i++) {
-                let piece=this.getPiece(Square.at(rowPlayer,i));
-                if (piece instanceof Pawn)
-                {
-                    let pawn=<Pawn>piece;
-                    pawn.possibleEnPassant=false;
+            let rowPlayer: number = this.currentPlayer === Player.WHITE ? 3 : 4;
+
+            for (let i= 0; i <= 7; i++) {
+                let piece = this.getPiece(Square.at(rowPlayer, i));
+                if (piece instanceof Pawn) {
+                    let pawn= <Pawn> piece;
+                    pawn.possibleEnPassant = false;
                 }
             }
         }

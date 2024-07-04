@@ -9,7 +9,7 @@ import Queen from "./queen";
 
 export default class Pawn extends Piece {
 
-    private _possibleEnPassant:boolean=false;
+    private _possibleEnPassant: boolean = false;
 
     public constructor(player: Player) {
         super(player);
@@ -34,14 +34,14 @@ export default class Pawn extends Piece {
         let arrayOfMoves= new Array();
 
         let initialPosition:  {
-            modifier : number,
-            startingPosition : number
-        }={modifier : 0, startingPosition : 0};
+            modifier: number,
+            startingPosition: number
+        }={modifier: 0, startingPosition: 0};
         this.setDirection(initialPosition);
 
         this.doubleMove(initialPosition, currentPlace, board, arrayOfMoves);
 
-        let square=new Square(currentPlace.row + initialPosition.modifier, currentPlace.col);
+        let square: Square = new Square(currentPlace.row + initialPosition.modifier, currentPlace.col);
         this.addMove(square, arrayOfMoves, board);
 
         this.allowTakingPiece(initialPosition, currentPlace, board, this.player, arrayOfMoves);
@@ -50,7 +50,7 @@ export default class Pawn extends Piece {
     }
 
     //pare sa fie o problema sa ii dau tipul any
-    public setDirection(initialPosition : any) : void{
+    public setDirection(initialPosition: any) : void{
         if (this.player == Player.WHITE) {
             initialPosition.modifier = 1;
             initialPosition.starterPosition = 1;
@@ -61,60 +61,56 @@ export default class Pawn extends Piece {
         }
     }
 
-    public doubleMove(initialPosition:any, currentPlace:Square, board:Board, arrayOfMoves:Array<any>) : void{
-        let starterPosition : number;
+    public doubleMove(initialPosition: any, currentPlace: Square, board: Board, arrayOfMoves: Array<any>) : void{
+        let starterPosition: number;
         if (currentPlace.row == initialPosition.starterPosition)
         {
-            let square1 : Square= new Square(currentPlace.row + (2*initialPosition.modifier), currentPlace.col);
-            let square2 : Square= new Square(currentPlace.row + initialPosition.modifier, currentPlace.col);
+            let square1: Square= new Square(currentPlace.row + (2*initialPosition.modifier), currentPlace.col);
+            let square2: Square= new Square(currentPlace.row + initialPosition.modifier, currentPlace.col);
             if (board.getPiece(square1) === undefined && board.getPiece(square2) == undefined)
                 this.addMove(square1, arrayOfMoves, board);
         }
     }
 
-    public addMove(square : Square, arrayOfMoves : Array<Square>, board : Board) : void {
+    public addMove(square: Square, arrayOfMoves: Array<Square>, board: Board) : void {
         if (CheckBounds.squareInBounds(square))
             if (board.getPiece(square) === undefined)
                  arrayOfMoves.push(square);
     }
 
-    public allowTakingPiece(initialPosition : any, currentPlace : Square, board : Board, player : Player, arrayOfMoves : Array<any>) : void {
-        let left : Square = new Square(currentPlace.row + initialPosition.modifier,currentPlace.col - 1);
-        let right : Square = new Square(currentPlace.row + initialPosition.modifier,currentPlace.col + 1);
+    public allowTakingPiece(initialPosition: any, currentPlace: Square, board: Board, player : Player, arrayOfMoves: Array<any>): void {
+        let left: Square = new Square(currentPlace.row + initialPosition.modifier,currentPlace.col - 1);
+        let right: Square = new Square(currentPlace.row + initialPosition.modifier,currentPlace.col + 1);
         if (CheckBounds.squareInBounds(left)) {
-            if (board.getPiece(left) != undefined) {
-                if (board.getPiece(left)?.player != player) {
-                    if (!(board.getPiece(left) instanceof King))
+            let leftPiece: Piece | undefined = board.getPiece(left);
+            if (leftPiece != undefined && leftPiece.player != player && !(leftPiece instanceof King)) {
                         arrayOfMoves.push(left);
-                }
             }
         }
         if (CheckBounds.squareInBounds(right)) {
-            if (board.getPiece(right) != undefined) {
-                if (board.getPiece(right)?.player != player) {
-                    if (!(board.getPiece(right) instanceof King))
+            let rightPiece: Piece | undefined = board.getPiece(right);
+            if (rightPiece != undefined && rightPiece.player != player && !(rightPiece instanceof King)) {
                         arrayOfMoves.push(right);
-                }
             }
         }
     }
 
-    public enPassant(initialPosition : any, currentPlace : Square, board : Board,player : Player, arrayOfMoves : Array<any>)
+    public enPassant(initialPosition: any, currentPlace: Square, board: Board, player: Player, arrayOfMoves: Array<any>)
     {
-        let left : Square = new Square(currentPlace.row,currentPlace.col - 1);
-        let right : Square = new Square(currentPlace.row,currentPlace.col + 1);
+        let left: Square = new Square(currentPlace.row,currentPlace.col - 1);
+        let right: Square = new Square(currentPlace.row,currentPlace.col + 1);
         if (CheckBounds.squareInBounds(left)) {
             if (board.getPiece(left) instanceof Pawn) {
-                let pawn : Pawn= (<Pawn> board.getPiece(left));
+                let pawn: Pawn= (<Pawn> board.getPiece(left));
                 if (pawn.possibleEnPassant) {
                     arrayOfMoves.push(new Square(currentPlace.row + initialPosition.modifier, left.col));
                 }
             }
         }
         if (CheckBounds.squareInBounds(right)) {
-            let target : Piece | undefined = board.getPiece(right);
+            let target: Piece | undefined = board.getPiece(right);
             if (board.getPiece(right) instanceof Pawn) {
-                let pawn:Pawn= ( <Pawn> board.getPiece(right));
+                let pawn: Pawn= ( <Pawn> board.getPiece(right));
                 if (pawn.possibleEnPassant) {
                     arrayOfMoves.push(new Square(currentPlace.row + initialPosition.modifier, right.col));
                 }
@@ -122,15 +118,15 @@ export default class Pawn extends Piece {
         }
     }
 
-    public promotePawn(board : Board, newSquare : Square) : void
+    public promotePawn(board: Board, newSquare: Square): void
     {
-        let finishLine : number;
+        let finishLine: number;
         if (this.player === Player.WHITE)
             finishLine = 7;
         else
             finishLine = 0;
         if (newSquare.row == finishLine) {
-            const queen : Queen = new Queen(this.player);
+            const queen: Queen = new Queen(this.player);
             board.setPiece(newSquare, queen);
         }
     }
