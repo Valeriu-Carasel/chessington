@@ -3,6 +3,9 @@ import Board from '../../../src/engine/board';
 import Player from '../../../src/engine/player';
 import Square from '../../../src/engine/square';
 import Pawn from '../../../src/engine/pieces/pawn';
+import Rook from "../../../src/engine/pieces/rook";
+import Piece from "../../../src/engine/pieces/piece";
+import {assert} from "chai";
 
 describe('King', () => {
     let board: Board;
@@ -73,5 +76,34 @@ describe('King', () => {
         const moves = king.getAvailableMoves(board);
 
         moves.should.not.deep.include(Square.at(5, 5));
+    });
+
+    it('can castle', () => {
+        const king: King = new King(Player.WHITE);
+        const rookLeft: Rook = new Rook(Player.WHITE);
+
+
+        board.setPiece(Square.at(0,4),king);
+        board.setPiece(Square.at(0,0),rookLeft);
+
+        const moves = king.getAvailableMoves(board);
+
+        moves.should.deep.include(Square.at(0,2));
+    });
+
+    it ('did castle correctly', () => {
+        const king: King = new King(Player.WHITE);
+        const rookLeft: Rook = new Rook(Player.WHITE);
+
+        board.setPiece(Square.at(0,4),king);
+        board.setPiece(Square.at(0,0),rookLeft);
+
+        king.moveTo(board,Square.at(0,2));
+        const presumedKing: Piece | undefined = board.getPiece(Square.at(0,2));
+        const presumedRook: Piece | undefined = board.getPiece(Square.at(0,3));
+
+        if (!(presumedKing instanceof King && presumedRook instanceof Rook)) {
+            assert.fail()
+        }
     });
 });
