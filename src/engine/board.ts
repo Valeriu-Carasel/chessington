@@ -2,13 +2,15 @@ import Player from './player';
 import GameSettings from './gameSettings';
 import Square from './square';
 import Piece from './pieces/piece';
+import Pawn from "./pieces/pawn";
+import King from "./pieces/king";
 
 export default class Board {
     public currentPlayer: Player;
     private readonly board: (Piece | undefined)[][];
 
-    public constructor() {
-        this.currentPlayer = Player.WHITE;
+    public constructor(currentPlayer?: Player) {
+        this.currentPlayer = currentPlayer ? currentPlayer : Player.WHITE;
         this.board = this.createBoard();
     }
 
@@ -34,9 +36,28 @@ export default class Board {
     public movePiece(fromSquare: Square, toSquare: Square) {
         const movingPiece = this.getPiece(fromSquare);        
         if (!!movingPiece && movingPiece.player === this.currentPlayer) {
+            if (movingPiece instanceof Pawn) {
+                const pawn: Pawn = <Pawn> movingPiece;
+                this.handleEnPassant(pawn, toSquare);
+            }
+            if (movingPiece instanceof King) {
+                this.handleCastle(movingPiece, fromSquare, toSquare);
+            }
+
             this.setPiece(toSquare, movingPiece);
             this.setPiece(fromSquare, undefined);
+
             this.currentPlayer = (this.currentPlayer === Player.WHITE ? Player.BLACK : Player.WHITE);
+
+            let rowPlayer: number = this.currentPlayer === Player.WHITE ? 3 : 4;
+
+            for (let i= 0; i <= 7; i++) {
+                let piece = this.getPiece(Square.at(rowPlayer, i));
+                if (piece instanceof Pawn) {
+                    const pawn= <Pawn> piece;
+                    pawn.possibleEnPassant = false;
+                }
+            }
         }
     }
 
@@ -46,5 +67,33 @@ export default class Board {
             board[i] = new Array(GameSettings.BOARD_SIZE);
         }
         return board;
+    }
+
+    public handleCastle(movingPiece: Piece, fromSquare: Square, toSquare: Square): void{
+        if (fromSquare.row == toSquare.row) {
+            if (toSquare.col - fromSquare.col == 2) {
+                const squareRook: Square = new Square(fromSquare.row, 7);
+                this.movePiece(squareRook, new Square(toSquare.row, toSquare.col - 1));
+                this.currentPlayer = (this.currentPlayer === Player.WHITE ? Player.BLACK : Player.WHITE); //added so it reverts back to the other player, ask Raimond
+            }
+            if (toSquare.col - fromSquare.col == -2) {
+                const squareRook: Square= new Square(fromSquare.row,0);
+                this.movePiece(squareRook, new Square(toSquare.row, toSquare.col + 1));
+                this.currentPlayer = (this.currentPlayer === Player.WHITE ? Player.BLACK : Player.WHITE); //added so it reverts back to the other player, ask Raimond
+            }
+        }
+    }
+
+    public handleEnPassant(movingPiece: Pawn, toSquare: Square): void{
+        if (toSquare.row - this.findPiece(movingPiece).row == 2  || (toSquare.row - this.findPiece(movingPiece).row) == -2) {
+            movingPiece.possibleEnPassant=true;
+        }
+        const squareBehind = this.currentPlayer === Player.WHITE ? new Square(toSquare.row-1,toSquare.col) : new Square(toSquare.row+1,toSquare.col)
+        if (this.getPiece(squareBehind) instanceof Pawn) {
+            let pawnBehind: Pawn = ( <Pawn> this.getPiece(squareBehind));
+            if (pawnBehind.possibleEnPassant == true) {
+                this.setPiece(squareBehind,undefined);
+            }
+        }
     }
 }
