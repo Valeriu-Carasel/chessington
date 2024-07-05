@@ -3,6 +3,7 @@ import Board from '../board';
 import Square from '../square';
 import SingletonKings from "./SingletonKings";
 import Pawn from "./pawn";
+import King from "./king";
 
 export default class Piece {
     public player: Player;
@@ -19,17 +20,20 @@ export default class Piece {
 
     public moveTo(board: Board, newSquare: Square) {
         const currentSquare = board.findPiece(this);
-        const king: SingletonKings= SingletonKings.getInstnace(this.player,board);
+        const king: SingletonKings = SingletonKings.getInstnace(this.player, board);
+
+        const currentPiece: Piece | undefined = board.getPiece(currentSquare);
 
         if (king.checked) {
-            board.setPiece(newSquare,new Pawn(this.player));
-            const isChecked: boolean=king.checked;
-            board.setPiece(newSquare,undefined);
+            const pieceNewSquare = board.getPiece(newSquare);
+            board.setPiece(newSquare, new Pawn(this.player));
+            const isChecked: boolean = king.checked;
+            board.setPiece(newSquare, pieceNewSquare);
             if (!isChecked)
                 board.movePiece(currentSquare, newSquare);
-        }
-        else
+        } else
             board.movePiece(currentSquare, newSquare);
-        this.moved=true;
+        this.moved = true;
     }
+
 }

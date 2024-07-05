@@ -116,5 +116,8 @@ describe('King', () => {
        board.setPiece(Square.at(4,4), bishop);
 
        king.moveTo(board,Square.at(0,1));
+       if (king.checkIfPositionIsChecked(Square.at(0,1),board,Player.WHITE))
+           assert.fail();
     });
+
 });

@@ -11,6 +11,7 @@ import Bishop from "./bishop";
 import Pawn from "./pawn";
 import player from "../player";
 import * as console from "node:console";
+import SingletonKings from "./SingletonKings";
 
 
 export default class King extends Piece {
@@ -21,9 +22,19 @@ export default class King extends Piece {
 
     moveTo(board: Board, newSquare: Square) {
         const currentPosition: Square = board.findPiece(this);
+        const king: SingletonKings = SingletonKings.getInstnace(this.player, board);
         if (!this.checkIfPositionIsChecked(newSquare, board, this.player)) {
-            super.moveTo(board, newSquare);
+           board.movePiece(currentPosition,newSquare);
         }
+        else {
+            const pieceNewSquare = board.getPiece(newSquare);
+            board.setPiece(newSquare, board.getPiece(currentPosition));
+            const isChecked: boolean = this.checkIfPositionIsChecked(newSquare, board, this.player);
+            board.setPiece(newSquare, pieceNewSquare);
+            if (!isChecked)
+                board.movePiece(currentPosition, newSquare);
+        }
+        SingletonKings.getInstnace(this.player,board).square=board.getPiece(newSquare) instanceof King?newSquare:currentPosition;
     }
 
     public getAvailableMoves(board: Board) {
@@ -68,8 +79,11 @@ export default class King extends Piece {
     }
 
     public checkIfPositionIsChecked(currentPosition: Square, board: Board, player: Player): boolean{
-        return King.checkForBishopLike(board,currentPosition, player) || King.checkForRookLike(currentPosition, board, player) || King.checkForKnightLike(currentPosition, player, board)
-            || King.checkForPawn(currentPosition,this.player,board);
+        const check1 = King.checkForBishopLike(board,currentPosition, player);
+        const check2 = King.checkForRookLike(currentPosition, board, player);
+        const check3 = King.checkForKnightLike(currentPosition, player, board);
+        const check4 = King.checkForPawn(currentPosition,this.player,board);
+        return check1 || check2 || check3 || check4;
     }
 
     private static checkForBishopLike(board: Board, currentPosition: Square,player: Player): boolean{
@@ -162,7 +176,7 @@ export default class King extends Piece {
 
     private static checkForPawn(currentPosition: Square, player: Player, board: Board): boolean{
         const modifier: number= player == Player.WHITE?1:-1;
-        const positionLeft: Square = new Square(currentPosition.row+modifier,currentPosition.col - 1);
+        const positionLeft: Square = new Square(currentPosition.row + modifier,currentPosition.col - 1);
         const positionRight: Square = new Square(currentPosition.row + modifier, currentPosition.col + 1);
         if (CheckBounds.squareInBounds(positionLeft))
         {
